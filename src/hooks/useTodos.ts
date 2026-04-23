@@ -1,12 +1,10 @@
 import { useLocalStorage } from './useLocalStorage';
 import type { Todo, Priority } from '../types/todo';
 
-const STORAGE_KEY = 'todos';
-
-const DEFAULT_PRIORITY: Priority = 'medium';
+const STORAGE_KEY = 'tasks'; // 与原HTML保持一致
 
 export function useTodos() {
-  const [todos, setTodos] = useLocalStorage<Todo[]>(STORAGE_KEY, []);
+  const [tasks, setTasks] = useLocalStorage<Todo[]>(STORAGE_KEY, []);
 
   const addTodo = (text: string, priority?: Priority) => {
     if (!text.trim()) return;
@@ -15,33 +13,27 @@ export function useTodos() {
       id: Date.now(),
       text: text.trim(),
       completed: false,
-      priority: priority || DEFAULT_PRIORITY
+      priority: priority || 'medium',
+      createdAt: new Date().toISOString()
     };
 
-    setTodos([...todos, newTodo]);
+    setTasks([...tasks, newTodo]);
   };
 
   const toggleTodo = (id: number) => {
-    setTodos(
-      todos.map(todo =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+    setTasks(tasks.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
   };
 
   const deleteTodo = (id: number) => {
-    setTodos(todos.filter(todo => todo.id !== id));
-  };
-
-  const clearCompleted = () => {
-    setTodos(todos.filter(todo => !todo.completed));
+    setTasks(tasks.filter(todo => todo.id !== id));
   };
 
   return {
-    todos,
+    tasks,
     addTodo,
     toggleTodo,
-    deleteTodo,
-    clearCompleted
+    deleteTodo
   };
 }

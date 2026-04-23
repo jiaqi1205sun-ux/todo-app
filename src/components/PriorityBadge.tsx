@@ -4,13 +4,22 @@ interface PriorityBadgeProps {
   priority: Priority;
 }
 
-const priorityConfig = {
-  high: { label: '高', className: 'priority-high' },
-  medium: { label: '中', className: 'priority-medium' },
-  low: { label: '低', className: 'priority-low' }
+const priorityColors: Record<Priority, string> = {
+  high: '#fed7e2',
+  medium: '#fefcbf',
+  low: '#bee3f8'
 };
 
 export function PriorityBadge({ priority }: PriorityBadgeProps) {
-  const config = priorityConfig[priority];
-  return <span className={`priority-badge ${config.className}`}>{config.label}</span>;
+  return (
+    <span
+      className="priority-badge"
+      style={{
+        backgroundColor: priorityColors[priority],
+        color: priority === 'high' ? '#f687b3' : priority === 'medium' ? '#ecc94b' : '#63b3ed'
+      }}
+    >
+      {priority === 'high' ? '高' : priority === 'medium' ? '中' : '低'}
+    </span>
+  );
 }

@@ -1,20 +1,22 @@
 import { useState } from 'react';
+import type { Priority } from '../types/todo';
 
 interface TodoInputProps {
-  onAdd: (text: string) => void;
+  onAdd: (text: string, priority: Priority) => void;
 }
 
 export function TodoInput({ onAdd }: TodoInputProps) {
   const [text, setText] = useState('');
+  const [priority, setPriority] = useState<Priority>('medium');
 
   const handleSubmit = () => {
     if (text.trim()) {
-      onAdd(text.trim());
+      onAdd(text.trim(), priority);
       setText('');
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSubmit();
     }
@@ -27,8 +29,8 @@ export function TodoInput({ onAdd }: TodoInputProps) {
           type="text"
           value={text}
           onChange={e => setText(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="添加新任务..."
+          onKeyDown={onKeyDown}
+          placeholder="输入要做的事情..."
         />
         <button className="add-button" onClick={handleSubmit}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -36,6 +38,14 @@ export function TodoInput({ onAdd }: TodoInputProps) {
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
         </button>
+      </div>
+      <div className="priority-selector">
+        <label>优先级</label>
+        <select value={priority} onChange={e => setPriority(e.target.value as Priority)}>
+          <option value="high">🔥 高优先级</option>
+          <option value="medium">⭐ 中优先级</option>
+          <option value="low">🌸 低优先级</option>
+        </select>
       </div>
     </div>
   );

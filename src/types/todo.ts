@@ -5,6 +5,7 @@ export interface Todo {
   text: string;
   completed: boolean;
   priority: Priority;
+  createdAt: string;
 }
 
-export type FilterType = 'all' | 'active' | 'completed';
+export type FilterType = 'all' | 'pending' | 'completed';

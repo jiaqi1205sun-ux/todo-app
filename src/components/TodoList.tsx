@@ -8,25 +8,39 @@ interface TodoListProps {
   onDelete: (id: number) => void;
 }
 
+// 优先级权重
+const priorityWeight: Record<Todo['priority'], number> = {
+  high: 1,
+  medium: 2,
+  low: 3
+};
+
 export function TodoList({ todos, filter, onToggle, onDelete }: TodoListProps) {
+  // 过滤任务
   const filteredTodos = todos.filter(todo => {
-    if (filter === 'active') return !todo.completed;
+    if (filter === 'all') return true;
     if (filter === 'completed') return todo.completed;
-    return true;
+    return !todo.completed;
   });
 
-  if (filteredTodos.length === 0) {
+  // 排序：未完成在前，然后按优先级高到低
+  const sortedTodos = filteredTodos.sort((a, b) => {
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    return priorityWeight[a.priority] - priorityWeight[b.priority];
+  });
+
+  if (sortedTodos.length === 0) {
     return (
       <div className="empty-state">
-        <div className="icon">📝</div>
-        <p>{filter === 'all' ? '还没有待办事项，添加一个吧！' : '没有相关事项'}</p>
+        <div className="empty-state-icon">📝</div>
+        <p>{filter === 'all' ? '还没有任务，添加一个吧~' : '没有相关任务'}</p>
       </div>
     );
   }
 
   return (
     <ul className="todo-list">
-      {filteredTodos.map(todo => (
+      {sortedTodos.map(todo => (
         <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onDelete={onDelete} />
       ))}
     </ul>
